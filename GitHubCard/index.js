@@ -33,7 +33,7 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = [];
+const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -62,7 +62,7 @@ function githubCardCreator(data) {
   const cardInfo = document.createElement('div');
   const name = document.createElement('h3');
   const username = document.createElement('p');
-  const location =document.createElement('p');
+  const location = document.createElement('p');
   const profile = document.createElement('p');
   const profileLink  = document.createElement('a');
   const followers = document.createElement('p');
@@ -77,7 +77,7 @@ function githubCardCreator(data) {
   username.classList.add('username');
 
   // add content: 
-  name.textContent = `${data.name}`;
+  name.textContent = 'null' ? '' : data.name;
   username.textContent = `${data.login}`
   location.textContent = 'null' ? '' : `${data.location}`;
   profileLink.setAttribute('hef', `${data.url}`);
@@ -102,14 +102,46 @@ function githubCardCreator(data) {
 
 const cards = document.querySelector('.cards');
 
-axios.get('https://api.github.com/users/osogrizz')
-.then (response => {
-  cards.appendChild(githubCardCreator(response.data))
-      console.log(response.data);
-     })
-     .catch( err => {
-       console.log(err);
-     })
+axios.get(`https://api.github.com/users/osogrizz`)
+  .then( response => {
+    cards.appendChild(githubCardCreator(response.data));  
+    // console.log(response.data);
+  })
+  // programatically creates follower cards currently exeeds API rate limit.
+  // axios.get(`https://api.github.com/users/osogrizz/followers`)
+  //   .then(response => {
+  //     response.data.forEach( user => {
+  //       followersArray.push(user.login);
+  //       followersArray.forEach( user => {
+  //         // console.log(user)
+  //         axios.get(`https://api.github.com/users/${user}`)
+  //         .then(respose => {
+  //           // cards.appendChild(githubCardCreator(response.data))
+  //           console.log(resonse.dataa)
+  //         })
+  //       })
+  //     })
+  //     console.log(followersArray);
+  //   })
+  axios.get(`https://api.github.com/users/osogrizz/followers`)
+    .then(response => {
+      console.log(response)
+      followersArray.forEach( user => {
+        console.log(user)
+        axios.get(`https://api.github.com/users/${user}`)
+          .then(response => {
+            console.log(response.data);
+            cards.appendChild(githubCardCreator(response.data));
+          })
+      })
+    })
+  
+  .catch( err => {
+    console.log(err);
+  })
+
+
+
 
 /* List of LS Instructors Github username's: 
   tetondan
