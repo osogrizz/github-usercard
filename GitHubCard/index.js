@@ -33,8 +33,8 @@
           user, and adding that card to the DOM.
 */
 
-const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
-// const followersArray = [];
+// const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -78,7 +78,7 @@ function githubCardCreator(data) {
   username.classList.add('username');
 
   // add content: 
-  name.textContent = `${data.name}`;
+  name.textContent = data.name ? `${data.name}` : '';
   username.textContent = `${data.login}`
   location.textContent = data.location ? `${data.location}` : '';
   profile.textContent = `Profile: `;
@@ -112,35 +112,37 @@ axios.get(`https://api.github.com/users/osogrizz`)
     // console.log(response.data);
   })
   // programatically creates follower cards currently exeeds API rate limit.
-  // axios.get(`https://api.github.com/users/osogrizz/followers`)
-  //   .then(response => {
-  //     response.data.forEach( user => {
-  //       followersArray.push(user.login);
-  //       followersArray.forEach( user => {
-  //         // console.log(user)
-  //         axios.get(`https://api.github.com/users/${user}`)
-  //         .then(respose => {
-  //           // cards.appendChild(githubCardCreator(response.data))
-  //           console.log(response.dataa)
-  //         })
-  //       })
-  //     })
-  //     console.log(followersArray);
-  //   })
-
-  // Uses provided github user names to manually create array.
   axios.get(`https://api.github.com/users/osogrizz/followers`)
     .then(response => {
-      console.log(response)
-      followersArray.forEach( user => {
-        console.log(user)
-        axios.get(`https://api.github.com/users/${user}`)
-          .then( response => {
-            console.log(response.data);
-            cards.appendChild(githubCardCreator(response.data));
-          })
+      response.data.forEach( user => {
+        followersArray.push(user.login);
+        followersArray.forEach( (user, index) => {
+          // console.log(user)
+          if (index < 10) {
+            axios.get(`https://api.github.com/users/${user}`)
+            .then(response => {
+              cards.appendChild(githubCardCreator(response.data));
+              console.log(response.dataa)
+            })
+          }
+        })
       })
+      console.log(followersArray);
     })
+
+  // Uses provided github user names to manually create array.
+  // axios.get(`https://api.github.com/users/osogrizz/followers`)
+  //   .then(response => {
+  //     console.log(response)
+  //     followersArray.forEach( user => {
+  //       console.log(user)
+  //       axios.get(`https://api.github.com/users/${user}`)
+  //         .then( response => {
+  //           console.log(response.data);
+  //           cards.appendChild(githubCardCreator(response.data));
+  //         })
+  //     })
+  //   })
   
   .catch( err => {
     console.log(err);
