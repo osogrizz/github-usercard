@@ -82,8 +82,9 @@ function githubCardCreator(data) {
   username.textContent = `${data.login}`
   location.textContent = data.location ? `${data.location}` : '';
   profile.textContent = `Profile: `;
-  profileLink.setAttribute('href', `${data.url}`);
-  profileLink.textContent = `${data.url}`;
+  profileLink.setAttribute('href', `${data.html_url}`);
+  profileLink.setAttribute('target', `_blank`);
+  profileLink.textContent = `${data.html_url}`;
   followers.textContent = `Followers: ${data.followers}`;
   following.textContent = `Following: ${data.following}`;
   bio.textContent = data.bio ? `${data.bio}` : '';
@@ -116,16 +117,16 @@ axios.get(`https://api.github.com/users/osogrizz`)
     .then(response => {
       response.data.forEach( user => {
         followersArray.push(user.login);
-        followersArray.forEach( (user, index) => {
-          // console.log(user)
-          if (index < 10) {
-            axios.get(`https://api.github.com/users/${user}`)
-            .then(response => {
-              cards.appendChild(githubCardCreator(response.data));
-              console.log(response.dataa)
-            })
-          }
-        })
+      })
+      followersArray.forEach( (user, index) => {
+        console.log(index)
+        if (index < 5) {
+          axios.get(`https://api.github.com/users/${user}`)
+          .then(response => {
+            cards.appendChild(githubCardCreator(response.data));
+            console.log(response.data)
+          })
+        }
       })
       console.log(followersArray);
     })
