@@ -34,6 +34,7 @@
 */
 
 const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+// const followersArray = [];
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
@@ -77,13 +78,15 @@ function githubCardCreator(data) {
   username.classList.add('username');
 
   // add content: 
-  name.textContent = 'null' ? '' : data.name;
+  name.textContent = `${data.name}`;
   username.textContent = `${data.login}`
-  location.textContent = 'null' ? '' : `${data.location}`;
-  profileLink.setAttribute('hef', `${data.url}`);
+  location.textContent = data.location ? `${data.location}` : '';
+  profile.textContent = `Profile: `;
+  profileLink.setAttribute('href', `${data.url}`);
+  profileLink.textContent = `${data.url}`;
   followers.textContent = `Followers: ${data.followers}`;
   following.textContent = `Following: ${data.following}`;
-  bio.textContent = 'null' ? '' : data.bio;
+  bio.textContent = data.bio ? `${data.bio}` : '';
   
   // append elements
   card.appendChild(image);
@@ -91,6 +94,7 @@ function githubCardCreator(data) {
   cardInfo.appendChild(name);
   cardInfo.appendChild(username);
   cardInfo.appendChild(location);
+  cardInfo.appendChild(profile);
   profile.appendChild(profileLink);
   cardInfo.appendChild(followers);
   cardInfo.appendChild(following);
@@ -117,19 +121,21 @@ axios.get(`https://api.github.com/users/osogrizz`)
   //         axios.get(`https://api.github.com/users/${user}`)
   //         .then(respose => {
   //           // cards.appendChild(githubCardCreator(response.data))
-  //           console.log(resonse.dataa)
+  //           console.log(response.dataa)
   //         })
   //       })
   //     })
   //     console.log(followersArray);
   //   })
+
+  // Uses provided github user names to manually create array.
   axios.get(`https://api.github.com/users/osogrizz/followers`)
     .then(response => {
       console.log(response)
       followersArray.forEach( user => {
         console.log(user)
         axios.get(`https://api.github.com/users/${user}`)
-          .then(response => {
+          .then( response => {
             console.log(response.data);
             cards.appendChild(githubCardCreator(response.data));
           })
